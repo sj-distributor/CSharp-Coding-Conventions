@@ -1,7 +1,7 @@
 ---
 layout: default
-title: agile-implementation-challenges
-parent: agile-project-guidelines
+title: Agile Implementation Guidelines
+parent: Agile Project Guidelines
 nav_order: 1
 ---
 
