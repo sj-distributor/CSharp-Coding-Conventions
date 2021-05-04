@@ -60,33 +60,41 @@ In this example, you can use your CI system variable substitution to apply the c
 
 ### **CONSIDER** using a semantic versioning (SemVer) model of assigning version numbers
 {: .text-yellow-300 }
-Semantic versioning is hugely important when sharing your code with other internal or external users downstream. When there are no downstream consumers of your code as a library, you have considerably more latitude in choosing a versioning scheme.
+Semantic versioning (shortened to [SemVer](https://semver.org/)) is hugely important when sharing your code with other internal or external users downstream. When there are no downstream consumers of your code as a library, you have considerably more latitude in choosing a versioning scheme.
 
-### **CONSIDER** using GitVersion to apply a unique version based on your Git history and branching strategy
+### **DO** use MinVer for versioning code libraries or projects that require a predictable version number
+{: .text-green-100 }
+[MinVer](https://github.com/adamralph/minver#readme) is a simple tool that generates a SemVer-compliant version number at build-time based on Git history. When building a particular Git revision with MinVer installed, it will always generate the same version number. Unlike other automated versioning tools, MinVer is based exclusively on Git tags and commit "height" between tags, granting a great deal of control and consistency over the version, regardless of branching strategy. This makes it the ideal tool for situations where the difference in code versions is meaningful to consumers, such as libraries or APIs.
+
+MinVer is a NuGet package. Whether you are starting a new project or introducing it later, you should install the [package](https://www.nuget.org/packages/MinVer) for all projects that need to be versioned:
+
+```powershell
+dotnet add package MinVer
+```
+
+At compile time, MinVer will examine the latest Git tag and set the MSBuild version properties (_not_ `AssemblyInfo.cs`). You can also use the generated numbers for [other purposes](https://github.com/adamralph/minver#can-i-use-the-version-calculated-by-minver-for-other-purposes) or [customize MinVer](https://github.com/adamralph/minver#options) to fit specific numbering and release schemes, if needed.
+
+### **CONSIDER** using GitVersion for versioning top-level applications or projects where the version number is informational or decorative
 {: .text-yellow-300 }
-[GitVersion](https://gitversion.readthedocs.io/en/latest/) is a tool that you can configure with your current branching strategy and run during the build process to generate a [SemVer](https://semver.org/) compliant version number for a particular Git revision. If you run GitVersion again against the same Git revision, it will generate the same version number.
+[GitVersion](https://gitversion.readthedocs.io/en/latest/) is a more robust alternative to MinVer that takes the repository's branching strategy into consideration when generating version numbers. This comes with additional configuration complexity, but ultimately allows a full version number to be applied with minimal-to-no developer intervention. This can be helpful in situations where versions are not attached to 'shared' code e.g. good for matching standalone app releases with log properties, but bad for for code libraries or APIs (use MinVer instead).
 
-GitVersion should be added to your local tools. If you are starting a new project, you may not have a tools manifest yet, you can create one easily:
+GitVersion is a separate executable that should be installed as a dotnet local tool as part of your `setup.ps1`. Local tools do not require any changes to PATH, which make them ideal for both local development and CI scripts. However, in most scenarios GitVersion can be excluded from your local / development build process. If you are starting a new project, you may not have a tools manifest yet, you can create one easily:
 
 ```powershell
 dotnet new tool-manifest
-dotnet tool istall gitVersion.tool
+dotnet tool install gitVersion.tool
 ```
 
-When you run the `setup.ps1` script on a new developer system or your CI system, it will add it as a local tool. This doesn't require any `PATH` changes so the CI system will pick it up easily.
+GitVersion will generate an environment variable called `GITVERSION_SEMVER` that you should use for setting the assembly versions. Note this is not the default `GITVERSION_FULLSEMVER` which is not compatible in all contexts, such as Docker container tags. The `GITVERSION_SEMVER` string is usable everywhere.
 
-In either case, running GitVersion doesn’t need to be part of your normal development build process. It will run in your CI system and generate environment variables that you can pick up and use during your build to apply version numbers to assemblies.
-
-Running this tool will generate a useful environment variable called `GITVERSION_SEMVER` that you should use for setting the assembly versions. The default will use `GITVERSION_FULLSEMVER` which is tempting, but creates version strings that are not compatible with Docker container tags, whereas `GITVERSION_SEMVER` is usable everywhere.
-
-Read the documentation on how to configure a `GitVersion.yml` file and the different modes. There is a simple wizard that walks you through a few questions and suggests the mode you should use. Version numbers are incremented whenever merges are done back to master, and you can force a major version increase by adding a tag to your commit message.
+Read the documentation on how to configure a `GitVersion.yml` file and the different modes. Alternatively, there is a wizard that walks you through a few questions and suggests the mode you should use. Version numbers are incremented whenever merges are done back to master, and you can force a major version increase by adding a tag to your commit message.
 
 ```powershell
 # start the GitVersion project wizard
 dotnet gitversion init
 ```
 
-### **DO** rely on your CI system to produce an environment variable that will be used as your build version and pass it to your build step command line
+### **DO** rely on your CI system to produce an environment variable that will be used as your build version and pass it to your build step command line when not using MinVer
 {: .text-green-100 }
 Whichever method you end up using the overall goal is to generate a unique version and apply it to all or some of the projects in a solution. The .NET Core tooling uses MSBuild properties to set assembly versions instead of `AssemblyInfo.cs` files and attributes. You can pass these parameter to the dotnet build tool using the `-p` command line switch. Here's an example:
 
@@ -96,7 +104,32 @@ dotnet build --configuration $configuration --nologo -p:"Product=$($product)" -p
 
 Pay careful attention to the quoted strings, since these variables could end up with special characters, it is safer to quote the strings to avoid unexpected build failures later. This is how the build script sample implements the compilation process.
 
-## Complation
+### **CONSIDER** including the Git hash in your version number as a unique differentiator during development
+{: .text-yellow-300 }
+
+When using manual version numbers or versioning tools based on Git, any concurrent development (or solo interactive rebasing) will risk versioning collisions before merging to mainline or explicitly re-numbering. This may cause conflicts or confusion when the version number is utilized, such as setting the build number, or on display in a PR deployment.
+
+To strictly and clearly differentiate revisions in these contexts, you should include the unique Git hash for a commit (or `sha`) with the general version number. In versioning lingo, this is "build metadata."
+
+You may or may not want to include build metadata in release versions. You should use leverage your CI tool and application code to include or exclude the build metadata with the version number based on the branch or context it is being used in.
+
+If you're using MinVer, you can add a custom [build metadata](https://github.com/adamralph/minver#can-i-include-build-metadata-in-the-version) suffix by setting the `MinVerBuildMetadata` environment variable on your build server. This will explicitly set the `MinVerBuildMetadata` property. Here is an example for making this change in Azure DevOps:
+
+```yaml
+variables:
+  MinVerBuildMetadata: Build.SourceVersion
+```
+
+If you're using GitVersion, there are [several environment variables](https://gitversion.net/docs/reference/variables) that automatically include the short or full sha, as well as some with development-relevant information such as branch name or PR info. You should either append the `Sha` or `ShortSha` variables to your SemVer number, or use the longer `FullBuildMetaData` or `InformationalVersion` in place of the general version number outright.
+
+If not using MinVer or GitVersion, you can retrieve the sha from git directly and save it to a variable, and then append it to the general version. You should follow the [SemVer spec](https://semver.org/spec/v2.0.0.html#spec-item-10) and denote the metadata suffix with a `+`:
+
+```powershell
+$sha = git rev-parse --short HEAD # exclude '--short' for full sha
+$buildVersion = "$version+$sha"
+```
+
+## Compilation
 
 The compilation process converts source code to binaries. Most projects that are a unit of build will have a single solution file.
 
