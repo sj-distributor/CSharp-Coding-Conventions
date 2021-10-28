@@ -5,7 +5,7 @@ nav_order: 5
 has_children: true
 ---
 
-Agile Transformation and Project Guidelines
+# Agile Transformation and Project Guidelines
 
 Companies from all industries still operate in traditional ways that are not conducive to adaptability and speed. In order to stay competitive in shifting markets, organizations are embracing Agile. It’s not just about technology; it’s a new way of thinking that impacts all aspects of the company. Agile methods drive efficiency in all domains, including human capital management, procurement, and finance, as well as more traditional departments such as product and manufacturing.
 
