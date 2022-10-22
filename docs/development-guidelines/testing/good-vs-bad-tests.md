@@ -89,7 +89,11 @@ All .NET test frameworks allow test methods to be declared async. When a test ca
 
 ### **DO** leverage test framework support for async setup
 {: .text-green-100 }
-With xUnit and Fixie, test class constructors are the default place to put common setup steps to be performed before each test case executes. However, since most of our integration test setup is going to involve a MediatR `Send` or other `async` call, constructor setup is impossible. An `async` call in a constructor wouldn’t even compile!
+With xUnit and Fixie, test class constructors are the default place to put common setup steps to be performed
+before each test case executes. 
+However, since most of our integration test setup is going to involve a 
+MediatR `Send` or other `async` call, constructor setup is impossible. An `async` call in a
+constructor wouldn’t even compile!
 
 With xUnit, you can rely on [IAsyncLifetime](https://stackoverflow.com/a/45906269)
 
