@@ -9,18 +9,13 @@ nav_order: 4
 # C#
 本指南为开发人员定义了C#开发标准并设定了明确的期望。它还可以作为参考材料，帮助新入行的工程师，使得每个人都可以自给自足。
 
-具有可预测性结构并遵循准则的代码使得开发人员可以快速适应代码而不是感到陌生
-This guide establishes a default approach to development in C# at Headspring that defines our standards and sets clear expectations for Engineers. It also serves as reference material to aid in streamlining new Engineer onboarding and helps everyone become more self-sufficient.
-
-Code that has a predictable structure and follows guidelines enables developers to adjust to the purpose of code and not an unfamiliar, or distracting, convention. Established conventions promote readability and affirm expectations that developers will have on first inspection. Code becomes easier to navigate and simpler to understand when we follow established conventions and standards. Coding standards take into account that other developers will read and maintain the code in the future.
-
+具有可预测结构并遵循指导原则的代码使开发人员能够适应代码的意图，而不是一种陌生的或分散注意力的约定。公认的约定促进了可读性，并肯定了开发人员在第一次检查时的期望。当我们遵循既定的约定和标准时，代码变得更易于导航和理解。编码标准考虑到将来其他开发人员会阅读和维护代码。
 
 - TOC
 
 ## 一致性的重要性
 
-Many of our projects are not "greenfield." We often take over existing, mature code bases or work alongside existing client engineering teams or even other consultant firms. It's tempting to forge ahead with your own conventions, naming styles, etc. (many of which exist in this document) without considering the impact on the overall code base. However, the correct approach is to adjust your style to match what's already established.
-我们的许多项目都不是“greenfield”，成熟的代码库或与现有的客户工程团队甚至其他咨询公司合作。在不考虑对整个代码库的影响的情况下，你可以大胆地使用自己的约定、命名样式等（本文中有很多）。然而，正确的方法是调整你的风格，使之与已经确立的风格相匹配。
+我们的许多项目都不是“greenfield”，成熟的代码库基于或者与现有的客户工程团队甚至其他咨询公司合作。在不考虑对整个代码库的影响的情况下，你可以大胆地使用自己的约定、命名样式等（本文中有很多）。然而，正确的方法是调整你的风格，使之与已经确立的风格相匹配。
 
 我们编写的代码将在未来几年被许多其他人阅读，首先是我们的开发人员和技术负责人。一旦我们为客户编写了软件，我们就将其交付给他们，然后不再自行维护，我们目标是他们或任何其他开发团队都可以轻松地维护它。如果代码库是风格和结构的混合体，读者会发现很难解析，这就很难维护。我们的目标是拥有一个看起来像是由一个开发人员编写的代码库。
 
