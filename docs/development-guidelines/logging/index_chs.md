@@ -83,7 +83,7 @@ ASP.NET Core使用了新的日志抽象Microsoft.Logging.Extensions。使用这�
 ### **要** 记录未处理的错误
 对于.net客户端框架，订阅' AppDomain.UnhandledException '。
 对于ASP.NET，添加一个异常过滤器。
-参见[致命的](/development-guidelines/logging/index.html# Fatal)和[错误](/development-guidelines/logging/index.html# Error)。
+参见[致命](/development-guidelines/logging/index.html# Fatal)和[错误](/development-guidelines/logging/index.html# Error)。
 
 ### **要** 记录您没有预料到但想知道是否发生的情况
 看到[警告](/development-guidelines/logging/index.html#warn)。
