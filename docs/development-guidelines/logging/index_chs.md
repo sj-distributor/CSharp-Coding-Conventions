@@ -61,7 +61,7 @@ nav_order: 4
 ## 如何构建日志的配置
 ### **要** 确保可以在不重新部署二进制文件的情况下配置日志
 至少应该能够在环境中调整日志记录级别，而无需进行部署以响应详细日志记录带来的潜在性能问题。这样做意味着将日志级别外部化到配置文件中。
-参见[Serilog配置](https://github.com/serilog/serilog/wiki/Configuration-Basics)，获取有关文件配置的.net完整和.net Core框架扩展的链接。
+参见[Serilog配置](https://github.com/serilog/serilog/wiki/Configuration-Basics)，获取有关文件配置的.net和.net Core框架扩展的链接。
 如果你使用的是ASP.NET Core，它提供了一个配置选项功能，不需要重新启动应用程序就可以应用，详细信息请参见(https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-3.1)。
 
 ### **考虑** 使用代码进行公共配置
