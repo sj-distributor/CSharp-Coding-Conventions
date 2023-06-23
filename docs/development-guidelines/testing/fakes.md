@@ -20,7 +20,7 @@ Use test fakes for the system’s external dependencies, like sending email, cal
 
 The [CareerStart](https://bitbucket.org/headspring/headstart-employee-directory/src/master/)(_Internal Repository_) sample application uses a test fake to test our interacting with ASP.NET’s own login cookie infrastructure. Since the tests are not running in a real web application in a real web server, the built-in cookie handling methods would be meaningless at test time. We instead insulate ourselves from those built-in methods with the `ILoginService` interface.
 
-The real implementation of [`ILoginService`](https://bitbucket.org/headspring/headstart-employee-directory/src/35734e21140fb7bff6a7db61a0adf8a96a91f39a/src/EmployeeDirectory/Infrastructure/LoginService.cs#lines-16:50)(_Internal Repository_) calls ASP.NET methods:
+The real implementation of [ILoginService`](https://bitbucket.org/headspring/headstart-employee-directory/src/35734e21140fb7bff6a7db61a0adf8a96a91f39a/src/EmployeeDirectory/Infrastructure/LoginService.cs#lines-16:50) (_Internal Repository_) calls ASP.NET methods:
 
 ```csharp
 public class LoginService : ILoginService

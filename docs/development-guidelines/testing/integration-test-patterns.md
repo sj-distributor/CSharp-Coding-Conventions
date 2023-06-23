@@ -128,7 +128,16 @@ var count  = Count<TEntity>();
 
 `Transaction` and the database querying shorthand methods should mostly be used during the assertions at the end of your test, when you’re simply trying to verify the new state of the underlying database after exercising the SUT.
 
-The [`Validation` helper](https://bitbucket.org/headspring/headstart-employee-directory/src/35734e21140fb7bff6a7db61a0adf8a96a91f39a/src/EmployeeDirectory.Tests/Testing.cs#lines-176:213)(_internal repository_) gives you the validation result for a given `command` or `query`. Combined with some custom `ShouldValidate` and `ShouldNotValidate` assertion extensions (see the [Complete Assertions](/development-guidelines/testing/integration-test-patterns.html#consider-complete-assertions) section), this makes it easy to write tests of the form, “Given a form filled out like so, we expect it to fail validation with these expected error messages.” Since production validation rules often need to inject dependencies of their own, and because they often need to query the database, Validation(...) works by establishing the now-familiar database transaction and IoC scope, resolving the validator as we would in production, and then exercising it. **Tests need only say, “This form should validate or not.”**:
+The [`Validation` helper](https://bitbucket.org/headspring/headstart-employee-directory/src/35734e21140fb7bff6a7db61a0adf8a96a91f39a/src/EmployeeDirectory.Tests/Testing.cs#lines-176:213)(_internal repository_) 
+gives you the validation result for a given `command` or `query`. 
+Combined with some custom `ShouldValidate` and `ShouldNotValidate` assertion extensions (see the [Complete Assertions](/development-guidelines/testing/integration-test-patterns.html#consider-complete-assertions) section), 
+this makes it easy to write tests of the form, 
+“Given a form filled out like so, we expect it to fail validation with these expected error messages.” 
+Since production validation rules often need to inject dependencies of their own,
+and because they often need to query the database, 
+Validation(...) works by establishing the now-familiar database transaction and IoC scope, 
+resolving the validator as we would in production, and then exercising it.
+**Tests need only say, “This form should validate or not.”**:
 
 ```csharp
 public static ValidationResult Validation<TResult>(IRequest<TResult> message)
@@ -589,7 +598,7 @@ When working with an ORM like Entity Framework, there’s a lot of potential for
 
 Following the above guidelines for Mediatr-based integration tests should provide all the coverage you need to prove persistence. If not, then the handler tests themselves are seriously incomplete.
 
-However, you may still consider augmenting those tests with entity persistence tests, whose entire purpose is to ensure that a given populated entity will successfully round-trip to the database and back. The CareerStart sample application does so with a [`ShouldPersist` assertion helper](https://bitbucket.org/headspring/headstart-employee-directory/src/35734e21140fb7bff6a7db61a0adf8a96a91f39a/src/EmployeeDirectory.Tests/Assertions.cs#lines-63:78)(_internal repository_):
+However, you may still consider augmenting those tests with entity persistence tests, whose entire purpose is to ensure that a given populated entity will successfully round-trip to the database and back. The CareerStart sample application does so with a [`ShouldPersist` assertion helper](https://bitbucket.org/headspring/headstart-employee-directory/src/35734e21140fb7bff6a7db61a0adf8a96a91f39a/src/EmployeeDirectory.Tests/Assertions.cs#lines-63:78) (_internal repository_):
 
 ```csharp
 public static void ShouldPersist<TEntity>(this TEntity entity) where TEntity : Entity
